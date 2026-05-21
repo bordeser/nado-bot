@@ -42,7 +42,7 @@ GRID_STEP    = 0.1     # % Abstand zwischen Levels
 GRID_PROFIT  = 0.2     # % TP pro Level
 SL_PCT       = 0.5     # % nach letztem Level
 INTERVAL     = 30      # Sek pro Tick
-DRY_RUN      = False
+DRY_RUN      = False   # True = Test, False = LIVE
 # ═══════════════════════════════════════════════════════════
 
 long_grid    = []
@@ -170,8 +170,9 @@ def place_order(is_buy, price, size, subaccount, sl_order=False):
             else: last_order_short = time.time()
             return True
         code = d.get("error_code", 0)
+        error_msg = d.get("error", str(d))
         if code == 2006: log("⚠️ Kein Kapital (2006)", Y); return "NO_MARGIN"
-        log(f"❌ {d.get('error','')} (Code:{code})", R); return False
+        log(f"❌ {error_msg} (Code:{code}) | Response: {str(d)[:200]}", R); return False
     except Exception as e:
         log(f"Order Exception: {e}", R); return False
     finally:
